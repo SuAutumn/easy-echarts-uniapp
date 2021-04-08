@@ -36,7 +36,7 @@ export default class TestOption extends MyEChartsOption {
       xAxis: {
         type: 'category',
         boundaryGap: true,
-        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '周八'],
         axisTick: {
           show: false,
         },
@@ -46,7 +46,7 @@ export default class TestOption extends MyEChartsOption {
         axisLabel: {
           fontSize: 10,
           color: '#999',
-          formatter: function(value, index) {
+          formatter: function (value, index) {
             return value;
           },
         },
@@ -69,7 +69,7 @@ export default class TestOption extends MyEChartsOption {
         axisLabel: {
           fontSize: 10,
           color: '#999',
-          formatter: function(value, index) {
+          formatter: function (value, index) {
             return value.toFixed(2)
           }
         },
@@ -87,29 +87,42 @@ export default class TestOption extends MyEChartsOption {
           color: '#ffc541',
         },
         fillerColor: 'rgba(255,197,65,0.4)',
-      }, ],
+      },],
       series: [{
-          type: 'line',
-          //symbol: "none",
-          smooth: true,
-          name: '看多',
-          data: [10, 43, 12, 12, 4, 5, 6, 5],
-          color: '#FE6F5E',
-          lineStyle: {
-            width: 1,
-          },
+        type: 'line',
+        //symbol: "none",
+        smooth: true,
+        name: '看多',
+        data: [10, 43, 12, 12, 4, 5, 6, 5],
+        color: '#FE6F5E',
+        lineStyle: {
+          width: 1,
         },
-        {
-          type: 'line',
-          //symbol: "none",
-          smooth: true,
-          name: '看空',
-          data: [64, 10, 45, 8, 7, 89, 54, 5, 7],
-          color: '#80CFAA',
-          lineStyle: {
-            width: 1,
-          },
+        label: {
+          show: true,
+          formatter: (params) => {
+            /** 箭头函数访问option数据 */
+            const total = this.option.series[0].data.reduce((prev, val) => {
+              return prev + val
+            }, 0)
+            return Math.floor(params.data / total * 100) + '%'
+          }
+        }
+      },
+      {
+        type: 'line',
+        //symbol: "none",
+        smooth: true,
+        name: '看空',
+        data: [64, 10, 45, 8, 7, 89, 54, 5, 7],
+        color: '#80CFAA',
+        lineStyle: {
+          width: 1,
         },
+        label: {
+          show: true
+        }
+      },
       ],
     }
   }

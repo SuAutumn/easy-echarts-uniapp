@@ -6,15 +6,12 @@
 - 解决 app 端 echarts 配置中函数去除问题。
 
 ### 使用方式
-
 template: <code>
 
     <my-echarts :option="option" style="width: 300px; height: 300px;"></my-echarts>
-
   </code>
 
 script: 设置echart option
-
 ```javascript
 import MyEcharts from '@/components/my-echarts/my-echarts.vue'
 import TestOption from '@/pages/index/TestOption.js'

@@ -55,13 +55,18 @@ export default {
         this.myEChartsReflect = myEChartsReflect.reflect(id)
         /** 不再使用id获取元素，在列表中展示，id会重复。 */
         this.myCharts = echarts.init(this.$el)
-        this.myCharts.setOption(this.myEChartsReflect.option)
+        this.update(this.myEChartsReflect.option)
         this.setEventTransfer()
         this.isInited = true // 初始化标记
+        // 更新一把option, 防止option已发生改变
+        this.update(this.option)
       }
     },
     update(option, oldOption) {
-      this.myCharts.setOption(option)
+      /** 防止option更新时候 还没有初始化好 */
+      if (this.myCharts) {
+        this.myCharts.setOption(option)
+      }
     },
     /** 
      * 转发事件，可以自行添加echarts支持的事件 
@@ -78,6 +83,8 @@ export default {
           })
         })
       }
+      /** 初始化事件 */
+      this.$ownerInstance.callMethod('eventTransfer', {name: 'inited', value: true})
     },
   }
 }

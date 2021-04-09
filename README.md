@@ -59,7 +59,7 @@ export default class TestOption extends MyEChartsOption {
 | key | type | desc |
 | ---- | ---- | ---- |
 | option | <code>(T extends MyEChartsOption)T.option</code> |echarts 配置 |
-| events | <code>string[]</code> | [echarts 支持的事件](https://echarts.apache.org/zh/api.html#events) |
+| events | <code>string[]</code> | [echarts 支持的事件名称](https://echarts.apache.org/zh/api.html#events) |
 
 
 ### 约定

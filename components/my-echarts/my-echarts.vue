@@ -25,6 +25,10 @@ export default {
     if (typeof echarts === 'object') {
     	this.init()
     } else {
+      // #ifdef H5
+      /** [参照](https://ask.dcloud.net.cn/question/88473) */
+      window.wx = undefined
+      // #endif
     	const script = document.createElement('script')
     	script.src = './static/echarts/echarts.36.min.js'
     	script.onload = this.init

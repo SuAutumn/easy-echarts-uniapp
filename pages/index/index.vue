@@ -1,6 +1,12 @@
 <template>
   <view class="content">
-    <my-echarts :option="option" style="width: 300px; height: 300px;"></my-echarts>
+    <view>单独展示</view>
+    <my-echarts :option="option" style="width: 300px; height: 160px" @click="onClick"></my-echarts>
+    <view>点击事件：{{ text || '-' }}</view>
+    <view>列表展示</view>
+    <view class="list" v-for="i in [0, 1, 2]" :key="i">
+      <my-echarts :option="optionList[i]" style="width: 300px; height: 160px"></my-echarts>
+    </view>
   </view>
 </template>
 
@@ -12,7 +18,9 @@ export default {
   data() {
     return {
       title: 'Hello',
-      option: (new TestOption()).option // 添加到reflect列表中
+      option: new TestOption().option, // 添加到reflect列表中
+      optionList: [0, 1, 2].map(() => new TestOption().option),
+      text: ''
     }
   },
   onLoad() {
@@ -22,8 +30,13 @@ export default {
     setOption() {
       setTimeout(() => {
         this.option.series[0].data = [10, 43, 12, 12, 4, 5, 6, 5].reverse()
+        this.optionList[1].series[0].data = [10, 43, 12, 12, 4, 5, 6, 5].reverse()
       }, 2000)
-    }
+    },
+    onClick(params) {
+      console.log(params)
+      this.text = `${params.name} ${params.seriesName} ${params.data}`
+    },
   },
 }
 </script>

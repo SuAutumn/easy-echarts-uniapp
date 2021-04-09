@@ -54,6 +54,14 @@ export default class TestOption extends MyEChartsOption {
 }
 ```
 
+### props参数
+
+| key | type | desc |
+| ---- | ---- | ---- |
+| option | <code>(T extends MyEChartsOption)T.option</code> |echarts 配置 |
+| events | <code>string[]</code> | [echarts 支持的事件](https://echarts.apache.org/zh/api.html#events) |
+
+
 ### 约定
   * option的id为类名，这步代码已经默认设置好。
   * 所有option类应类似<code>TestOption</code>那样，继承<code>MyEChartsOption</code>。

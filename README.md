@@ -4,6 +4,7 @@
 
 - <strong>无痛顺滑</strong>在 uni-app app 端编写 echarts 配置，几乎和在浏览器中书写方式一样。
 - 解决 app 端 echarts 配置中函数去除问题。
+- 可以配置echarts支持事件，并将事件<code>$emit</code>到父组件，用户可自行处理。
 
 ### 使用方式
 template: <code>

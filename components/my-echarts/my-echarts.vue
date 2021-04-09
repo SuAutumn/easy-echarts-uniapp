@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  props: ['option'],
+  props: ['option', 'events'],
   mounted() {
     // console.log('js:', this.option)
   },
@@ -23,7 +23,7 @@ export default {
 <script module="echarts" lang="renderjs">
 import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
 export default {
-  props: ['option'],
+  props: ['option', 'events'],
   mounted() {
     if (typeof echarts === 'object') {
     	this.init()
@@ -68,13 +68,16 @@ export default {
      * https://echarts.apache.org/zh/api.html#events
      */
     setEventTransfer() {
-      ['click', 'datazoom'].forEach(name => {
-        this.myCharts.on(name, params => {
-          /** event 存在循环引用 暂时先去除该属性 */
-          delete params.event
-          this.$ownerInstance.callMethod('eventTransfer', {name, value: params})
+      if (this.events instanceof Array && this.events.length > 0) {
+        /** e.g. ['click', 'datazoom'] */
+        this.events.forEach(name => {
+          this.myCharts.on(name, params => {
+            /** event 存在循环引用 暂时先去除该属性 */
+            delete params.event
+            this.$ownerInstance.callMethod('eventTransfer', {name, value: params})
+          })
         })
-      })
+      }
     },
   }
 }

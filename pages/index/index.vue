@@ -1,7 +1,7 @@
 <template>
   <view class="content">
     <view>单独展示</view>
-    <my-echarts :option="option" style="width: 300px; height: 160px" @click="onClick"></my-echarts>
+    <my-echarts :option="option" style="width: 300px; height: 160px" @click="onClick" :events="['click']"></my-echarts>
     <view>点击事件：{{ text || '-' }}</view>
     <view>列表展示</view>
     <view class="list" v-for="i in [0, 1, 2]" :key="i">
@@ -20,7 +20,7 @@ export default {
       title: 'Hello',
       option: new TestOption().option, // 添加到reflect列表中
       optionList: [0, 1, 2].map(() => new TestOption().option),
-      text: ''
+      text: '',
     }
   },
   onLoad() {

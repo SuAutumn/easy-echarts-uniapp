@@ -3,8 +3,9 @@
 ### 亮点
 
 - <strong>无痛顺滑</strong>在 uni-app app 端编写 echarts 配置，几乎和在浏览器中书写方式一样。
-- 解决 app 端 echarts 配置中函数去除问题。
-- 可以配置echarts支持事件，并将事件<code>$emit</code>到父组件，用户可自行处理。
+- 解决 uniapp app 端 echarts 配置中函数丢失问题。
+- 解决 uniapp H5 移动端 echarts 交互问题。
+- 支持echarts事件，eg: <code>click,datazoom</code>，并将事件<code>$emit</code>到父组件，用户可自行处理。
 - echarts初始化完成会有<code>inited</code>事件通知。
 
 ### 使用方式
@@ -69,7 +70,7 @@ export default class TestOption extends MyEChartsOption {
   * 所有option类应类似<code>TestOption</code>那样，继承<code>MyEChartsOption</code>。
 
 ### 思想
-    在renderjs层缓存了option实现类，当在渲染echarts时候，实际上重新实列化了option。   
-    并且重新实例化的option的内容和一开始option内容是一致的。   
-    作者从java中的反射机制得到灵感，通过在运行的时候，动态构造一个新类。  
-    所以先注册了要被构造的类，在渲染的时候再重新生成。
+  作者从java中的反射机制得到灵感，在代码运行的时候，动态实例化新对象。  
+  所以在renderjs层先注册了echarts option的类（<code>T extends MyEChartsOption</code>）。  
+  在渲染echarts时候，实际上重新实列化了option，这一步的意义是保留option中函数设置。  
+  这一就和在浏览器中编写方式一样。

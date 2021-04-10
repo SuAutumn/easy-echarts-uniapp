@@ -79,4 +79,4 @@ export default class TestOption extends MyEChartsOption {
   作者从java中的反射机制得到灵感，在代码运行的时候，动态实例化新对象。  
   所以在renderjs层先注册了echarts option的类（<code>T extends MyEChartsOption</code>）。  
   在渲染echarts时候，实际上重新实列化了option，这一步的意义是保留option中函数设置。  
-  这一就和在浏览器中编写方式一样。
+  这样就和在浏览器中编写方式一样。

@@ -5,16 +5,22 @@
 - <strong>无痛顺滑</strong>在 uni-app app 端编写 echarts 配置，几乎和在浏览器中书写方式一样。
 - 支持 uniapp app 端 echarts 配置编写函数。
 - 支持 uniapp H5 移动端 echarts 交互。
-- 支持echarts事件，eg: <code>click,datazoom</code>，并将事件<code>$emit</code>到父组件，用户可自行处理。
-- echarts初始化完成会有<code>inited</code>事件通知。
+- 支持 echarts 事件，eg: <code>click,datazoom</code>，并将事件<code>$emit</code>到父组件，用户可自行处理。
+- 支持 echarts 初始化完成<code>inited</code>事件通知。
 
 ### 使用方式
 
-template: <code>
-
-    <my-echarts :option="option" style="width: 300px; height: 300px;"></my-echarts>
-  </code>
-
+template: 
+```html
+<view class="my-echarts">
+  <my-echarts
+    :option="option"
+    @click="onClick"
+    @datazoom="onDatazoom"
+    :events="['click', 'datazoom']"
+  ></my-echarts>
+</view>
+```
 script: 设置echart option
 ```javascript
 import MyEcharts from '@/components/my-echarts/my-echarts.vue'

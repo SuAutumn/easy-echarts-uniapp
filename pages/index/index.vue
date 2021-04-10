@@ -1,19 +1,19 @@
 <template>
   <view class="content">
     <view>单独展示</view>
-    <my-echarts
-      :option="option"
-      style="width: 300px; height: 160px"
-      @click="onClick"
-      @datazoom="onDatazoom"
-      :events="['click', 'datazoom']"
-    ></my-echarts>
+    <view class="my-echarts">
+      <my-echarts
+        :option="option"
+        @click="onClick"
+        @datazoom="onDatazoom"
+        :events="['click', 'datazoom']"
+      ></my-echarts>
+    </view>
     <view>点击事件：{{ text || '-' }}</view>
     <view>列表展示</view>
-    <view class="list" v-for="i in [0, 1, 2]" :key="i">
+    <view class="my-echarts" v-for="i in [0, 1, 2]" :key="i">
       <my-echarts
         :option="optionList[i]"
-        style="width: 300px; height: 160px"
         @click="onClick"
         :events="['click']"
       ></my-echarts>
@@ -41,7 +41,7 @@ export default {
     setOption() {
       setTimeout(() => {
         this.option.series[0].data = [10, 43, 12, 12, 4, 5, 6, 5].reverse()
-        this.optionList[1].series[0].data = [ 10, 43, 12, 12, 4, 5, 6, 5, ].reverse()
+        this.optionList[1].series[0].data = [10, 43, 12, 12, 4, 5, 6, 5].reverse()
       }, 2000)
     },
     onClick(params) {
@@ -89,5 +89,9 @@ export default {
 .title {
   font-size: 36rpx;
   color: #8f8f94;
+}
+.my-echarts {
+  width: 300px;
+  height: 160px;
 }
 </style>

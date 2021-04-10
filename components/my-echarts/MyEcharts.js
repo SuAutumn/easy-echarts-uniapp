@@ -8,7 +8,7 @@ class MyEChartsReflect {
    * @param {typeof MyEChartsOption} optCons option构造函数
    */
   registOptConstructor(optCons) {
-    if (optCons.prototype instanceof MyEChartsOption) {
+    if (typeof optCons === 'function' && optCons.prototype instanceof MyEChartsOption) {
       this.constructorList[optCons.name] = optCons
     } else {
       throw new TypeError('注册类应都为MyEChartsOption子类')

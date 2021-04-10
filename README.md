@@ -91,6 +91,6 @@ export default class TestOption extends MyEChartsOption {
   这样就和在浏览器中编写方式一样。
 
 
-#### 如果本项目帮助到你的话，请你不要吝啬，随手点个[star](https://gitee.com/gitee_zhangp/easy-echarts-uniapp)，或者满分好评。
+#### 如果本项目帮助到您的话，请您不要吝啬，赠人玫瑰，手留余香。随手点个[star](https://gitee.com/gitee_zhangp/easy-echarts-uniapp)，或者满分好评。
 
 #### 如遇问题，欢迎提[issue](https://gitee.com/gitee_zhangp/easy-echarts-uniapp/issues)，或者底部留言。

@@ -1,5 +1,11 @@
 <template>
-  <view class="my-echarts" :id="option.id" :prop="option" :change:prop="echarts.onPropChange"></view>
+  <view
+    class="my-echarts"
+    :id="option.id"
+    :prop="option"
+    :data-events="events"
+    :change:prop="echarts.onPropChange"
+  ></view>
 </template>
 
 <script>
@@ -23,7 +29,6 @@ export default {
 <script module="echarts" lang="renderjs">
 import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
 export default {
-  props: ['option', 'events'],
   mounted() {
     if (typeof echarts === 'object') {
     	this.init()
@@ -40,14 +45,7 @@ export default {
   },
   methods: {
     onPropChange(option, oldOption) {
-      console.log('option change')
-      if (Object.keys(oldOption).length === 0) {
-        this.init()
-      } else {
-        this.update(option, oldOption)
-      }
-      // console.log(option)
-      /** diff option 增量更新 */
+      this.update(option, oldOption)
     },
     init() {
       const id = this.option.id
@@ -68,14 +66,15 @@ export default {
         this.myCharts.setOption(option)
       }
     },
-    /** 
-     * 转发事件，可以自行添加echarts支持的事件 
+    /**
+     * 转发事件，可以自行添加echarts支持的事件
      * https://echarts.apache.org/zh/api.html#events
      */
     setEventTransfer() {
-      if (this.events instanceof Array && this.events.length > 0) {
+		  const events = this.getEvents()
+      if (events instanceof Array && events.length > 0) {
         /** e.g. ['click', 'datazoom'] */
-        this.events.forEach(name => {
+        events.forEach(name => {
           this.myCharts.on(name, params => {
             /** event 存在循环引用 暂时先去除该属性 */
             delete params.event
@@ -86,6 +85,12 @@ export default {
       /** 初始化事件 */
       this.$ownerInstance.callMethod('eventTransfer', {name: 'inited', value: true})
     },
+	  getEvents() {
+		  const e = this.$ownerInstance.getDataset().events
+		  if (e) {
+			  return e.split(',')
+		  }
+	  }
   }
 }
 </script>

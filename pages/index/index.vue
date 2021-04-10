@@ -1,11 +1,22 @@
 <template>
   <view class="content">
     <view>单独展示</view>
-    <my-echarts :option="option" style="width: 300px; height: 160px" @click="onClick" :events="['click']"></my-echarts>
+    <my-echarts
+      :option="option"
+      style="width: 300px; height: 160px"
+      @click="onClick"
+      @datazoom="onDatazoom"
+      :events="['click', 'datazoom']"
+    ></my-echarts>
     <view>点击事件：{{ text || '-' }}</view>
     <view>列表展示</view>
     <view class="list" v-for="i in [0, 1, 2]" :key="i">
-      <my-echarts :option="optionList[i]" style="width: 300px; height: 160px"></my-echarts>
+      <my-echarts
+        :option="optionList[i]"
+        style="width: 300px; height: 160px"
+        @click="onClick"
+        :events="['click']"
+      ></my-echarts>
     </view>
   </view>
 </template>
@@ -30,24 +41,27 @@ export default {
     setOption() {
       setTimeout(() => {
         this.option.series[0].data = [10, 43, 12, 12, 4, 5, 6, 5].reverse()
-        this.optionList[1].series[0].data = [10, 43, 12, 12, 4, 5, 6, 5].reverse()
+        this.optionList[1].series[0].data = [ 10, 43, 12, 12, 4, 5, 6, 5, ].reverse()
       }, 2000)
     },
     onClick(params) {
       console.log(params)
       this.text = `${params.name} ${params.seriesName} ${params.data}`
     },
+    onDatazoom(params) {
+      console.log(params)
+    },
   },
 }
 </script>
 <script module="index" lang="renderjs">
-  import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
-  import TestOption from '@/pages/index/TestOption.js'
-  export default {
-    created() {
-      myEChartsReflect.registOptConstructor(TestOption)
-    }
+import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
+import TestOption from '@/pages/index/TestOption.js'
+export default {
+  created() {
+    myEChartsReflect.registOptConstructor(TestOption)
   }
+}
 </script>
 
 <style>

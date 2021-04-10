@@ -1,7 +1,12 @@
+/** 反射容器 */
 class MyEChartsReflect {
   constructor() {
     this.constructorList = {}
   }
+  /**
+   * 注册option构造函数
+   * @param {typeof MyEChartsOption} optCons option构造函数
+   */
   registOptConstructor(optCons) {
     if (optCons.prototype instanceof MyEChartsOption) {
       this.constructorList[optCons.name] = optCons
@@ -10,6 +15,11 @@ class MyEChartsReflect {
     }
   }
 
+  /**
+   * 创建option实列
+   * @param {string} consName option构造函数名称
+   * @returns {(MyEChartsOption|undefined)} 实列
+   */
   reflect(consName) {
     if (typeof consName === 'string' && this.constructorList[consName]) {
       const Cons = this.constructorList[consName]
@@ -25,6 +35,7 @@ class MyEChartsReflect {
 const myEChartsReflect = new MyEChartsReflect()
 export default myEChartsReflect
 
+/** 所有option父类，设置option中id */
 export class MyEChartsOption {
   constructor() {
     this.option = {

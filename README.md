@@ -3,8 +3,8 @@
 ### 亮点
 
 - <strong>无痛顺滑</strong>在 uni-app app 端编写 echarts 配置，几乎和在浏览器中书写方式一样。
-- 解决 uniapp app 端 echarts 配置中函数丢失问题。
-- 解决 uniapp H5 移动端 echarts 交互问题。
+- 支持 uniapp app 端 echarts 配置编写函数。
+- 支持 uniapp H5 移动端 echarts 交互。
 - 支持echarts事件，eg: <code>click,datazoom</code>，并将事件<code>$emit</code>到父组件，用户可自行处理。
 - echarts初始化完成会有<code>inited</code>事件通知。
 

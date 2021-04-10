@@ -55,9 +55,18 @@ export default class TestOption extends MyEChartsOption {
     this.option = {
       ...this.option,
       .
+      // 自定义option
       .
+      yAxis: {
+        axisLabel: {
+          formatter: function (value, index) {
+            return value.toFixed(2)
+          }
+        },
+      },
       .
       // 自定义option
+      .
     }
   }
 }

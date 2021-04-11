@@ -15,21 +15,20 @@ template:
 <view class="my-echarts">
   <my-echarts
     :option="option"
+    :events="['click', 'datazoom']"
     @click="onClick"
     @datazoom="onDatazoom"
-    :events="['click', 'datazoom']"
   ></my-echarts>
 </view>
 ```
 script: 设置echart option
 ```javascript
-import MyEcharts from '@/components/my-echarts/my-echarts.vue'
-import TestOption from '@/pages/index/TestOption.js'
 export default {
   components: { MyEcharts },
   data() {
+    this.testOption = new TestOption()
     return {
-      option: (new TestOption()).option, // 获取自定义option
+      option: this.testOption.option, // 获取自定义option
     }
   }
 }
@@ -46,7 +45,7 @@ export default {
 }
 ```
 
-TestOption: 自定义option类，本示例中定义<strong>y轴formatter函数</strong>
+TestOption: 自定义option类，本示例中定义<strong>y轴formatter函数，以及访问serires data方式</strong>
 ```javascript
 
 export default class TestOption extends MyEChartsOption {
@@ -64,6 +63,19 @@ export default class TestOption extends MyEChartsOption {
           }
         },
       },
+      series: [{
+        data: [],
+        label: {
+          formatter: (params) => {
+            /** 箭头函数访问option数据 */
+            const total = this.option.series[0].data.reduce((prev, val) => {
+              return prev + val
+            }, 0)
+            if (total === 0) return '0%'
+            return Math.floor(params.data / total * 100) + '%'
+          }
+        }
+      }],
       .
       // 自定义option
       .

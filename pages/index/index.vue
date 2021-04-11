@@ -5,6 +5,7 @@
       <my-echarts
         :option="option"
         :events="['click', 'datazoom']"
+        @inited="onInited"
         @click="onClick"
         @datazoom="onDatazoom"
       ></my-echarts>
@@ -46,6 +47,9 @@ export default {
         this.testOption.update()
         this.testOptionList.forEach(item => item.update())
       }, 2000)
+    },
+    onInited(val) {
+      console.log('onInited: ', val)
     },
     onClick(params) {
       console.log(params)

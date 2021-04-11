@@ -16,6 +16,7 @@ template:
   <my-echarts
     :option="option"
     :events="['click', 'datazoom']"
+    @inited="onInited"
     @click="onClick"
     @datazoom="onDatazoom"
   ></my-echarts>

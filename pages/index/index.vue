@@ -4,18 +4,18 @@
     <view class="my-echarts">
       <my-echarts
         :option="option"
+        :events="['click', 'datazoom']"
         @click="onClick"
         @datazoom="onDatazoom"
-        :events="['click', 'datazoom']"
       ></my-echarts>
     </view>
     <view>点击事件：{{ text || '-' }}</view>
     <view>列表展示</view>
-    <view class="my-echarts" v-for="i in [0, 1, 2]" :key="i">
+    <view class="my-echarts" v-for="(opt, i) in optionList" :key="i">
       <my-echarts
-        :option="optionList[i]"
-        @click="onClick"
+        :option="opt"
         :events="['click']"
+        @click="onClick"
       ></my-echarts>
     </view>
   </view>
@@ -27,10 +27,12 @@ import TestOption from '@/pages/index/TestOption.js'
 export default {
   components: { MyEcharts },
   data() {
+    this.testOption = new TestOption()
+    this.testOptionList = [0, 1, 2].map(() => new TestOption())
     return {
       title: 'Hello',
-      option: new TestOption().option, // 添加到reflect列表中
-      optionList: [0, 1, 2].map(() => new TestOption().option),
+      option: this.testOption.option, // 添加到reflect列表中
+      optionList: this.testOptionList.map((item) => item.option),
       text: '',
     }
   },
@@ -39,9 +41,10 @@ export default {
   },
   methods: {
     setOption() {
+      /** 模仿接口请求数据 */
       setTimeout(() => {
-        this.option.series[0].data = [10, 43, 12, 12, 4, 5, 6, 5].reverse()
-        this.optionList[1].series[0].data = [10, 43, 12, 12, 4, 5, 6, 5].reverse()
+        this.testOption.update()
+        this.testOptionList.forEach(item => item.update())
       }, 2000)
     },
     onClick(params) {

@@ -31,12 +31,11 @@ export default class TestOption extends MyEChartsOption {
         top: '10%',
         bottom: '30%',
         left: '5%',
-        right: '12%',
+        right: '15%',
       },
       xAxis: {
         type: 'category',
-        boundaryGap: true,
-        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '周八'],
+        data: [],
         axisTick: {
           show: false,
         },
@@ -62,9 +61,6 @@ export default class TestOption extends MyEChartsOption {
         },
         splitLine: {
           show: true,
-          lineStyle: {
-            width: 0.4,
-          },
         },
         axisLabel: {
           fontSize: 10,
@@ -93,7 +89,7 @@ export default class TestOption extends MyEChartsOption {
         //symbol: "none",
         smooth: true,
         name: '看多',
-        data: [10, 43, 12, 12, 4, 5, 6, 5],
+        data: [],
         color: '#FE6F5E',
         lineStyle: {
           width: 1,
@@ -105,6 +101,7 @@ export default class TestOption extends MyEChartsOption {
             const total = this.option.series[0].data.reduce((prev, val) => {
               return prev + val
             }, 0)
+            if (total === 0) return '0%'
             return Math.floor(params.data / total * 100) + '%'
           }
         }
@@ -114,7 +111,7 @@ export default class TestOption extends MyEChartsOption {
         //symbol: "none",
         smooth: true,
         name: '看空',
-        data: [64, 10, 45, 8, 7, 89, 54, 5, 7],
+        data: [],
         color: '#80CFAA',
         lineStyle: {
           width: 1,
@@ -125,5 +122,12 @@ export default class TestOption extends MyEChartsOption {
       },
       ],
     }
+  }
+
+  /** 更新option */
+  update() {
+    this.option.xAxis.data = ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '周八']
+    this.option.series[0].data = [10, 43, 12, 12, 4, 5, 6, 5]
+    this.option.series[1].data = [64, 10, 45, 8, 7, 89, 54, 5, 7]
   }
 }

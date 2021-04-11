@@ -29,6 +29,12 @@ export default {
 <script module="echarts" lang="renderjs">
 import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
 export default {
+  data() {
+    this.isInited = false // 初始化标记
+    this.cacheOption = null // 记录在初始化之前的已变更option
+    this.instance = null // echarts instance
+    return {}
+  },
   mounted() {
     if (typeof echarts === 'object') {
     	this.init()
@@ -49,21 +55,28 @@ export default {
     },
     init() {
       const id = this.option.id
-      if (window.echarts && id && !this.isInited) {
-        this.myEChartsReflect = myEChartsReflect.reflect(id)
+      if (id && !this.isInited) {
+        this.instance = myEChartsReflect.reflect(id)
         /** 不再使用id获取元素，在列表中展示，id会重复。 */
         this.myCharts = echarts.init(this.$el)
-        this.update(this.myEChartsReflect.option)
+
+        this.update(this.instance.option)
         this.setEventTransfer()
-        this.isInited = true // 初始化标记
+        this.isInited = true
         // 更新一把option, 防止option已发生改变
-        this.update(this.option)
+        if (this.cacheOption) {
+          this.update(this.cacheOption)
+          this.cacheOption = null
+        }
       }
     },
     update(option, oldOption) {
       /** 防止option更新时候 还没有初始化好 */
       if (this.myCharts) {
+        this.instance.updateOption(option)
         this.myCharts.setOption(option)
+      } else {
+        this.cacheOption = option
       }
     },
     /**
@@ -91,6 +104,11 @@ export default {
 			  return e.split(',')
 		  }
 	  }
+  },
+  beforeDestroy() {
+    if (this.myCharts) {
+      this.myCharts.dispose()
+    }
   }
 }
 </script>

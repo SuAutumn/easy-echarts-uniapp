@@ -42,4 +42,37 @@ export class MyEChartsOption {
       id: this.constructor.name
     }
   }
+
+  /** 合并option */
+  updateOption(newOpt) {
+    if (Object.prototype.toString.call(newOpt) === '[object Object]') {
+      const stack = [[newOpt, this.option]]
+      while (stack.length > 0) {
+        const [newVal, val] = stack.pop()
+        if (newVal === val) {
+          continue
+        }
+        for (const k in newVal) {
+          if (Object.prototype.hasOwnProperty.call(newVal, k)) {
+            if (newVal[k] !== val[k]) {
+              /** 数据直接替换，不做比较 */
+              if (k === 'data' ||
+                isPrimaryType(newVal[k]) ||
+                !newVal[k] ||
+                !Object.prototype.hasOwnProperty.call(val, k)) {
+                val[k] = newVal[k]
+              } else {
+                stack.push([newVal[k], val[k]])
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
+}
+
+function isPrimaryType(input) {
+  return ['undefined', 'string', 'number', 'boolean'].indexOf(typeof input) > -1
 }

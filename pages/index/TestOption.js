@@ -21,6 +21,13 @@ const TOOLTIP_CONF = {
   extraCssText: 'z-index: 9;',
 }
 export default class TestOption extends MyEChartsOption {
+  /** 
+   * 构造函数名称
+   * fix bug: 修复在uni-app打包时，视图层的this.constructor.name和逻辑层this.constructor.name不一致情况
+   * 导致无法在renderjs层重新实例化逻辑层的option构造类。
+   */
+  static name = 'TestOption'
+  
   constructor() {
     super()
     this.option = {

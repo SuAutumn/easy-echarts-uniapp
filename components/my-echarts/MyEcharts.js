@@ -9,6 +9,9 @@ class MyEChartsReflect {
    */
   registOptConstructor(optCons) {
     if (typeof optCons === 'function' && optCons.prototype instanceof MyEChartsOption) {
+      if (this.constructorList[optCons.name]) {
+        console.warn('存在相同' + optCons.name + '的构造函数，将会使新的覆盖老的，建议使用全局唯一name')
+      }
       this.constructorList[optCons.name] = optCons
     } else {
       throw new TypeError('注册类应都为MyEChartsOption子类')
@@ -37,7 +40,17 @@ export default myEChartsReflect
 
 /** 所有option父类，设置option中id */
 export class MyEChartsOption {
+  /** 
+   * 构造函数名称
+   * fix bug: 修复在uni-app打包时，视图层的this.constructor.name和逻辑层this.constructor.name不一致情况
+   * 导致无法在renderjs层重新实例化逻辑层的option构造类。
+   */
+  static name = 'MyEChartsOption'
+
   constructor() {
+    if (!Object.getOwnPropertyDescriptor(this.constructor, 'name').writable) {
+      throw new Error('请设置' + this.constructor.name + '类的静态属性name')
+    }
     this.option = {
       id: this.constructor.name
     }

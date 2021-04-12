@@ -50,7 +50,8 @@ TestOption: 自定义option类，本示例中定义<strong>y轴formatter函数�
 
 <strong style="background-color: red; color: white;">请一定要手动设置每个option类的静态属性name</strong>
 
-    说明：在uni-app打包时，视图层的this.constructor.name和逻辑层this.constructor.name存在不一致情况，
+    说明：在uni-app打包时，视图层的this.constructor.name
+    和逻辑层this.constructor.name存在不一致情况，
     导致无法在renderjs层重新实例化逻辑层的option构造类。
 
 ```javascript
@@ -58,7 +59,8 @@ TestOption: 自定义option类，本示例中定义<strong>y轴formatter函数�
 export default class TestOption extends MyEChartsOption {
   /** 
    * 构造函数名称，实际上可以赋值任何字符串，但建议是变量名称。
-   * fix bug: 修复在uni-app打包时，视图层的this.constructor.name和逻辑层this.constructor.name不一致情况
+   * fix bug: 修复在uni-app打包时，视图层的this.constructor.name
+   * 和逻辑层this.constructor.name不一致情况
    * 导致无法在renderjs层重新实例化逻辑层的option构造类。
    */
   static name = 'TestOption'

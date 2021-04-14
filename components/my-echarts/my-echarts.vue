@@ -1,16 +1,10 @@
 <template>
-  <view
-    class="my-echarts"
-    :id="option.id"
-    :prop="option"
-    :data-events="events"
-    :change:prop="echarts.onPropChange"
-  ></view>
+  <view class="my-echarts" :prop="data" :data-events="events" :change:prop="echarts.onPropChange"></view>
 </template>
 
 <script>
 export default {
-  props: ['option', 'events'],
+  props: ['events', 'data'],
   mounted() {
     // console.log('js:', this.option)
   },
@@ -27,12 +21,11 @@ export default {
 </script>
 
 <script module="echarts" lang="renderjs">
-import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
+import myEChartsReflect, { clone } from '@/components/my-echarts/MyEcharts.js'
 export default {
   data() {
     this.isInited = false // 初始化标记
-    this.cacheOption = null // 记录在初始化之前的已变更option
-    this.instance = null // echarts instance
+    this.consOpt = () => {} // echarts option constructor
     return {}
   },
   mounted() {
@@ -54,30 +47,23 @@ export default {
       this.update(option, oldOption)
     },
     init() {
-      const id = this.option.id
-      if (id && !this.isInited) {
-        this.instance = myEChartsReflect.reflect(id)
+      if (!this.$el.id) throw new TypeError('请设置元素的id')
+      this.consOpt = myEChartsReflect.reflect(this.$el.id)
+      if (!this.isInited && this.consOpt) {
         /** 不再使用id获取元素，在列表中展示，id会重复。 */
         this.myCharts = echarts.init(this.$el)
-
-        this.update(this.instance.option)
+        this.update(this.data)
         this.setEventTransfer()
         this.isInited = true
-        // 更新一把option, 防止option已发生改变
-        if (this.cacheOption) {
-          this.update(this.cacheOption)
-          this.cacheOption = null
-        }
       }
     },
-    update(option, oldOption) {
+    update(data, oldData) {
       /** 防止option更新时候 还没有初始化好 */
       if (this.myCharts) {
-        this.instance.updateOption(option)
-        this.myCharts.setOption(option)
-      } else {
-        this.cacheOption = option
-      }
+        const now = Date.now()
+        this.myCharts.setOption(new this.consOpt(clone(data)).option, true)
+        console.log('set option time:', Date.now() - now + 'ms')
+      } 
     },
     /**
      * 转发事件，可以自行添加echarts支持的事件

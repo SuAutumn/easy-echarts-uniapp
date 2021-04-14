@@ -3,7 +3,8 @@
     <view>单独展示</view>
     <view class="my-echarts">
       <my-echarts
-        :option="option"
+        id="TestOption"
+        :data="data"
         :events="['click', 'datazoom']"
         @inited="onInited"
         @click="onClick"
@@ -12,12 +13,8 @@
     </view>
     <view>点击事件：{{ text || '-' }}</view>
     <view>列表展示</view>
-    <view class="my-echarts" v-for="(opt, i) in optionList" :key="i">
-      <my-echarts
-        :option="opt"
-        :events="['click']"
-        @click="onClick"
-      ></my-echarts>
+    <view class="my-echarts" v-for="(opt, i) in dataList" :key="i">
+      <my-echarts id="TestOption" :data="opt" :events="['click']" @click="onClick"></my-echarts>
     </view>
   </view>
 </template>
@@ -28,13 +25,10 @@ import TestOption from '@/pages/index/TestOption.js'
 export default {
   components: { MyEcharts },
   data() {
-    this.testOption = new TestOption()
-    this.testOptionList = [0, 1, 2].map(() => new TestOption())
     return {
-      title: 'Hello',
-      option: this.testOption.option, // 添加到reflect列表中
-      optionList: this.testOptionList.map((item) => item.option),
+      dataList: [0, 1, 2].map(() => [11, 12, 9, 10, 32]),
       text: '',
+      data: [11, 12, 9, 10, 32],
     }
   },
   onLoad() {
@@ -44,8 +38,9 @@ export default {
     setOption() {
       /** 模仿接口请求数据 */
       setTimeout(() => {
-        this.testOption.update()
-        this.testOptionList.forEach(item => item.update())
+        // this.testOption.update()
+        // this.testOptionList.forEach((item) => item.update())
+        this.data = [1, 2, 3, 4, 5, 5, 7, 8]
       }, 2000)
     },
     onInited(val) {

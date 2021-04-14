@@ -29,7 +29,7 @@ export default class TestOption extends MyEChartsOption {
   constructor(data = []) {
     super()
     this.option = {
-      animation: true,
+      animation: false,
       tooltip: TOOLTIP_CONF,
       grid: {
         top: '10%',
@@ -39,7 +39,7 @@ export default class TestOption extends MyEChartsOption {
       },
       xAxis: {
         type: 'category',
-        data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '周八'],
+        data: data.map((val, index) => index),
         axisTick: {
           show: false,
         },

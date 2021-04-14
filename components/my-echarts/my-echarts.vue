@@ -52,17 +52,17 @@ export default {
       if (!this.isInited && this.consOpt) {
         /** 不再使用id获取元素，在列表中展示，id会重复。 */
         this.myCharts = echarts.init(this.$el)
-        this.update(this.data)
         this.setEventTransfer()
+        this.update(this.data)
         this.isInited = true
       }
     },
     update(data, oldData) {
       /** 防止option更新时候 还没有初始化好 */
       if (this.myCharts) {
-        const now = Date.now()
+        this.now = Date.now()
         this.myCharts.setOption(new this.consOpt(clone(data)).option, true)
-        console.log('set option time:', Date.now() - now + 'ms')
+        this.optionTime = Date.now() - this.now + 'ms'
       } 
     },
     /**
@@ -81,6 +81,9 @@ export default {
           })
         })
       }
+      this.myCharts.on('finished', () => {
+        this.$ownerInstance.callMethod('eventTransfer', {name: 'finishedTime', value: Date.now() - this.now + 'ms'})
+      })
       /** 初始化事件 */
       this.$ownerInstance.callMethod('eventTransfer', {name: 'inited', value: true})
     },

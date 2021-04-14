@@ -9,13 +9,16 @@
         @inited="onInited"
         @click="onClick"
         @datazoom="onDatazoom"
+        @optionTime="onOptionTime"
+        @finishedTime="onFinished"
       ></my-echarts>
     </view>
     <view>点击事件：{{ text || '-' }}</view>
+    <view v-for="(t, i) in time" :key="i">{{ t }}</view>
     <view>列表展示</view>
-    <view class="my-echarts" v-for="(opt, i) in dataList" :key="i">
+    <!-- <view class="my-echarts" v-for="(opt, i) in dataList" :key="i">
       <my-echarts id="TestOption" :data="opt" :events="['click']" @click="onClick"></my-echarts>
-    </view>
+    </view> -->
   </view>
 </template>
 
@@ -28,7 +31,8 @@ export default {
     return {
       dataList: [0, 1, 2].map(() => [11, 12, 9, 10, 32]),
       text: '',
-      data: [11, 12, 9, 10, 32],
+      data: [],
+      time: [],
     }
   },
   onLoad() {
@@ -36,11 +40,17 @@ export default {
   },
   methods: {
     setOption() {
+      for (let i = 0; i < 300; i++) {
+        this.data.push(Math.floor(20 * Math.random()))
+      }
       /** 模仿接口请求数据 */
       setTimeout(() => {
         // this.testOption.update()
         // this.testOptionList.forEach((item) => item.update())
-        this.data = [1, 2, 3, 4, 5, 5, 7, 8]
+        this.data = []
+        for (let i = 0; i < 300; i++) {
+          this.data.push(Math.floor(20 * Math.random()))
+        }
       }, 2000)
     },
     onInited(val) {
@@ -53,6 +63,12 @@ export default {
     onDatazoom(params) {
       console.log(params)
     },
+    onOptionTime(val) {
+      this.time.push('option time: ' + val)
+    },
+    onFinished(val) {
+      this.time.push('finished time: ' + val)
+    }
   },
 }
 </script>

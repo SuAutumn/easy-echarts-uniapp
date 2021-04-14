@@ -21,7 +21,7 @@ export default {
 </script>
 
 <script module="echarts" lang="renderjs">
-import myEChartsReflect, { clone } from '@/components/my-echarts/MyEcharts.js'
+import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
 export default {
   data() {
     this.isInited = false // 初始化标记
@@ -60,9 +60,7 @@ export default {
     update(data, oldData) {
       /** 防止option更新时候 还没有初始化好 */
       if (this.myCharts) {
-        this.now = Date.now()
-        this.myCharts.setOption(new this.consOpt(clone(data)).option, true)
-        this.optionTime = Date.now() - this.now + 'ms'
+        this.myCharts.setOption(new this.consOpt(data).option, true)
       } 
     },
     /**
@@ -81,9 +79,6 @@ export default {
           })
         })
       }
-      this.myCharts.on('finished', () => {
-        this.$ownerInstance.callMethod('eventTransfer', {name: 'finishedTime', value: Date.now() - this.now + 'ms'})
-      })
       /** 初始化事件 */
       this.$ownerInstance.callMethod('eventTransfer', {name: 'inited', value: true})
     },

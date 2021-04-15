@@ -112,7 +112,7 @@ export function clone(obj) {
 /** ak CKXbsfREBTNY3fiYPoK5hs0GmFvCG2z8 */
 /**
  * 加载百度地图api
- * @param {string} ak 百度地图ak
+ * @param {string} ak 百度地图ak 请使用自己申请ak
  * @returns {Promise<void>}
  */
 function loadBmap(ak) {

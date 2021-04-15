@@ -49,9 +49,6 @@ export class MyEChartsOption {
     if (!Object.getOwnPropertyDescriptor(this.constructor, 'name').writable) {
       throw new Error('请设置' + this.constructor.name + '类的静态属性name')
     }
-    // this.option = {
-    //   id: this.constructor.name
-    // }
   }
 
   /** 合并option */
@@ -111,4 +108,48 @@ export function clone(obj) {
     }
   }
   return root
+}
+/** ak CKXbsfREBTNY3fiYPoK5hs0GmFvCG2z8 */
+/**
+ * 加载百度地图api
+ * @param {string} ak 百度地图ak
+ * @returns {Promise<void>}
+ */
+function loadBmap(ak) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = 'https://api.map.baidu.com/api?v=2.0&ak=' + ak + '&callback=bmapload'
+    window.bmapload = () => {
+      delete window.bmapload
+      resolve()
+    }
+    script.onerror = reject
+    document.body.appendChild(script)
+  })
+}
+
+/**
+ * 动态加载js资源
+ * @param {string} src js文件地址
+ * @returns
+ */
+function loadJs(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.src = src
+    script.onload = resolve
+    script.onerror = reject
+    document.body.appendChild(script)
+  })
+}
+
+/** 加载资源回调函数 id为元素的id */
+export async function loadJsCallback(id) {
+  if (!(window.echarts && window.echarts.version)) {
+    await loadJs('./static/echarts/echarts.36.min.js')
+  }
+  /** MapOption组件加载地图相关js */
+  if (id === 'MapOption' && !window.BMap) {
+    await Promise.all([loadBmap('CKXbsfREBTNY3fiYPoK5hs0GmFvCG2z8'), loadJs('./static/echarts/bmap.js')])
+  } 
 }

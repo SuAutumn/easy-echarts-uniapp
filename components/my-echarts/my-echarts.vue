@@ -21,7 +21,7 @@ export default {
 </script>
 
 <script module="echarts" lang="renderjs">
-import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
+import myEChartsReflect, { loadJsCallback } from '@/components/my-echarts/MyEcharts.js'
 export default {
   data() {
     this.isInited = false // 初始化标记
@@ -29,18 +29,11 @@ export default {
     return {}
   },
   mounted() {
-    if (typeof echarts === 'object') {
-    	this.init()
-    } else {
-      // #ifdef H5
-      /** [参照](https://ask.dcloud.net.cn/question/88473) */
-      window.wx = undefined
-      // #endif
-    	const script = document.createElement('script')
-    	script.src = './static/echarts/echarts.36.min.js'
-    	script.onload = this.init
-    	document.head.appendChild(script)
-    }
+    // #ifdef H5
+    /** [参照](https://ask.dcloud.net.cn/question/88473) */
+    window.wx = undefined
+    // #endif
+    loadJsCallback(this.$el.id).then(this.init)
   },
   methods: {
     onPropChange(option, oldOption) {
@@ -53,13 +46,13 @@ export default {
         /** 不再使用id获取元素，在列表中展示，id会重复。 */
         this.myCharts = echarts.init(this.$el)
         this.setEventTransfer()
-        this.update(this.data)
         this.isInited = true
+        this.update(this.data)
       }
     },
     update(data, oldData) {
       /** 防止option更新时候 还没有初始化好 */
-      if (this.myCharts) {
+      if (this.isInited) {
         this.myCharts.setOption(new this.consOpt(data).option, true)
       } 
     },
@@ -101,5 +94,6 @@ export default {
 .my-echarts {
   width: 100%;
   height: 100%;
+  position: relative;
 }
 </style>

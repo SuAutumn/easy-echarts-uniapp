@@ -16,6 +16,7 @@
     <view class="my-echarts" v-for="(opt, i) in dataList" :key="i">
       <my-echarts id="TestOption" :data="opt" :events="['click']" @click="onClick"></my-echarts>
     </view>
+    <button @click="toMap">map</button>
   </view>
 </template>
 
@@ -25,7 +26,7 @@ export default {
   components: { MyEcharts },
   data() {
     return {
-      dataList: [0, 1, 2].map(() => [11, 12, 9, 10, 32]),
+      dataList: [0, 1].map(() => [11, 12, 9, 10, 32]),
       text: '',
       data: [],
     }
@@ -56,6 +57,11 @@ export default {
     onDatazoom(params) {
       console.log(params)
     },
+    toMap() {
+      uni.navigateTo({
+        url: '/pages/map/index'
+      })
+    }
   },
 }
 </script>
@@ -75,6 +81,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-bottom: 20px;
 }
 
 .logo {

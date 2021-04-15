@@ -21,7 +21,6 @@
 
 <script>
 import MyEcharts from '@/components/my-echarts/my-echarts.vue'
-import TestOption from '@/pages/index/TestOption.js'
 export default {
   components: { MyEcharts },
   data() {
@@ -32,10 +31,10 @@ export default {
     }
   },
   onLoad() {
-    this.setOption()
+    this.setData()
   },
   methods: {
-    setOption() {
+    setData() {
       for (let i = 0; i < 30; i++) {
         this.data.push(Math.floor(20 * Math.random()))
       }

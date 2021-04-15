@@ -28,8 +28,11 @@ export default class TestOption extends MyEChartsOption {
 
   constructor(data = []) {
     super()
+    const total = data.reduce((prev, val) => {
+      return prev + val
+    }, 0)
     this.option = {
-      animation: false,
+      animation: true,
       tooltip: TOOLTIP_CONF,
       grid: {
         top: '10%',
@@ -104,13 +107,9 @@ export default class TestOption extends MyEChartsOption {
           },
           label: {
             show: true,
-            formatter: (params) => {
-              /** 箭头函数访问option数据 */
-              const total = this.option.series[0].data.reduce((prev, val) => {
-                return prev + val
-              }, 0)
+            formatter: function (params) {
               if (total === 0) return '0%'
-              return Math.floor((params.data / total) * 100) + '%'
+              return Math.round((params.data / total) * 100) + '%'
             },
           },
         },

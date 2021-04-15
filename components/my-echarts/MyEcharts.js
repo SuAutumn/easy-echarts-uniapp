@@ -92,6 +92,7 @@ function getConstructor(obj) {
   return (obj.__proto__ || Object.getPrototypeOf(obj)).constructor
 }
 
+/** 深拷贝 */
 export function clone(obj) {
   if (isPrimaryType(obj) || !obj) return obj
   const root = new getConstructor(obj)()

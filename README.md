@@ -7,6 +7,7 @@
 - 支持 uniapp H5 移动端 echarts 交互。
 - 支持 echarts 事件，eg: <code>click,datazoom</code>，并将事件<code>$emit</code>到父组件，用户可自行处理。
 - 支持 echarts 初始化完成<code>inited</code>事件通知。
+- 支持加载额外js资源，比如地图依赖的js。通过修改MyECharts.js中<code>loadJsCallback(id)</code>函数.
 
 ### 使用方式
 

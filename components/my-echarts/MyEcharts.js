@@ -9,9 +9,6 @@ class MyEChartsReflect {
    */
   registOptConstructor(optCons) {
     if (typeof optCons === 'function' && optCons.prototype instanceof MyEChartsOption) {
-      if (this.constructorList[optCons.name]) {
-        console.warn('存在相同' + optCons.name + '的构造函数，将会使新的覆盖老的，建议使用全局唯一name')
-      }
       this.constructorList[optCons.name] = optCons
     } else {
       throw new TypeError('注册类应都为MyEChartsOption子类')
@@ -36,7 +33,7 @@ class MyEChartsReflect {
 const myEChartsReflect = new MyEChartsReflect()
 export default myEChartsReflect
 
-/** 所有option父类，设置option中id */
+/** 所有option父类 */
 export class MyEChartsOption {
   /**
    * 构造函数名称
@@ -50,35 +47,6 @@ export class MyEChartsOption {
       throw new Error('请设置' + this.constructor.name + '类的静态属性name')
     }
   }
-
-  /** 合并option */
-  // updateOption(newOpt) {
-  //   if (Object.prototype.toString.call(newOpt) === '[object Object]') {
-  //     const stack = [[newOpt, this.option]]
-  //     while (stack.length > 0) {
-  //       const [newVal, val] = stack.pop()
-  //       if (newVal === val) {
-  //         continue
-  //       }
-  //       for (const k in newVal) {
-  //         if (Object.prototype.hasOwnProperty.call(newVal, k)) {
-  //           if (newVal[k] !== val[k]) {
-  //             /** 数据直接替换，不做比较 */
-  //             if (k === 'data' ||
-  //               isPrimaryType(newVal[k]) ||
-  //               !newVal[k] ||
-  //               !Object.prototype.hasOwnProperty.call(val, k)) {
-  //               val[k] = newVal[k]
-  //             } else {
-  //               stack.push([newVal[k], val[k]])
-  //             }
-  //           }
-  //         }
-  //       }
-
-  //     }
-  //   }
-  // }
 }
 
 function isPrimaryType(input) {

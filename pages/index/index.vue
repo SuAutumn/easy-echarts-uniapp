@@ -5,10 +5,12 @@
       <my-echarts
         id="TestOption"
         :data="data"
-        :events="['click', 'datazoom']"
+        :events="['click', 'datazoom', 'rendered', 'finished']"
         @inited="onInited"
         @click="onClick"
         @datazoom="onDatazoom"
+        @rendered="onRendered"
+        @finished="onFinished"
       ></my-echarts>
     </view>
     <view>点击事件：{{ text || '-' }}</view>
@@ -36,9 +38,9 @@ export default {
   },
   methods: {
     setData() {
-      for (let i = 0; i < 30; i++) {
-        this.data.push(Math.floor(20 * Math.random()))
-      }
+      // for (let i = 0; i < 30; i++) {
+      //   this.data.push(Math.floor(20 * Math.random()))
+      // }
       /** 模仿接口请求数据 */
       setTimeout(() => {
         this.data = []
@@ -57,11 +59,17 @@ export default {
     onDatazoom(params) {
       console.log(params)
     },
+    onRendered(params) {
+      // console.log('on rendered', params)
+    },
+    onFinished(params) {
+      console.log('on finished', params)
+    },
     toMap() {
       uni.navigateTo({
-        url: '/pages/map/index'
+        url: '/pages/map/index',
       })
-    }
+    },
   },
 }
 </script>

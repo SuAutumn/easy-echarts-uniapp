@@ -47,10 +47,28 @@ export class MyEChartsOption {
    */
   static name = 'MyEChartsOption'
 
-  constructor() {
+  /**
+   * @param {ECharts} context echarts实列
+   */
+  constructor(context) {
     if (!Object.getOwnPropertyDescriptor(this.constructor, 'name').writable) {
       throw new Error('请设置' + this.constructor.name + '类的静态属性name')
     }
+    this.context = context
+  }
+
+  showLoading() {
+    this.context.showLoading('default', {
+      /** 数据内容参照 https://echarts.apache.org/zh/api.html#echartsInstance.showLoading */
+      text: '加载中',
+      textColor: '#8358dd',
+      color: '#8358dd',
+      lineWidth: 2,
+    })
+  }
+
+  hideLoading() {
+    this.context.hideLoading()
   }
 }
 

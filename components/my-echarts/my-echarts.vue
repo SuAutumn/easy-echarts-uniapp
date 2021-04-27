@@ -46,15 +46,15 @@ export default {
       if (!this.isInited && this.consOpt) {
         /** 不再使用id获取元素，在列表中展示，id会重复。 */
         this.myCharts = echarts.init(this.$el)
-        this.setEventTransfer()
         this.isInited = true
+        this.setEventTransfer()
         this.update(this.data)
       }
     },
     update(data, oldData) {
       /** 防止option更新时候 还没有初始化好 */
       if (this.isInited) {
-        this.myCharts.setOption(new this.consOpt(data).option, true)
+        this.myCharts.setOption(new this.consOpt(data, this.myCharts).option, true)
       } 
     },
     /**
@@ -68,13 +68,15 @@ export default {
         events.forEach(name => {
           this.myCharts.on(name, params => {
             /** event 存在循环引用 暂时先去除该属性 */
-            delete params.event
+            if (Object.prototype.toString.call(params) === '[object Object]') {
+              delete params.event
+            }
             this.$ownerInstance.callMethod('eventTransfer', {name, value: params})
           })
         })
       }
       /** 初始化事件 */
-      this.$ownerInstance.callMethod('eventTransfer', {name: 'inited', value: true})
+      this.$ownerInstance.callMethod('eventTransfer', {name: 'inited', value: this.isInited})
     },
 	  getEvents() {
 		  const e = this.$ownerInstance.getDataset().events

@@ -25,9 +25,14 @@ export default class TestOption extends MyEChartsOption {
    * 导致无法在renderjs层重新实例化逻辑层的option构造类。
    */
   static name = 'TestOption'
-
-  constructor(data = []) {
-    super()
+  
+  constructor(data = [], context) {
+    super(context)
+    if (data.length === 0) {
+      this.showLoading()
+    } else {
+      this.hideLoading()
+    }
     const total = data.reduce((prev, val) => {
       return prev + val
     }, 0)

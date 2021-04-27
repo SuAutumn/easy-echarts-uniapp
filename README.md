@@ -8,6 +8,7 @@
 - 支持 echarts 事件，eg: <code>click,datazoom</code>，并将事件<code>$emit</code>到父组件，用户可自行处理。
 - 支持 echarts 初始化完成<code>inited</code>事件通知。
 - 支持加载额外js资源，比如地图依赖的js。通过修改loadJsCallback.js文件<code>loadJsCallback(id)</code>函数.
+- 暴露echarts实列给Option类（比如<code>MyEChartsOption.prototype.showLoading()</code>），用户可以更灵活使用一些实列方法。
 
 ### 使用方式
 
@@ -73,8 +74,16 @@ export default class TestOption extends MyEChartsOption {
    */
   static name = 'TestOption'
 
-  constructor(data = []) {
-    super()
+  /**
+   * @param {ECharts} context echarts实列，可以使用echarts一些方法，e.g: 比如加载loading
+   */
+  constructor(data = [], context) {
+    super(context)
+    if (data.length === 0) {
+      this.showLoading()
+    } else {
+      this.hideLoading()
+    }
     const total = data.reduce((prev, val) => {
       return prev + val
     }, 0)

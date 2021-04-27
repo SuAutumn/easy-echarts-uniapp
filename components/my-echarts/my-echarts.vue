@@ -21,7 +21,8 @@ export default {
 </script>
 
 <script module="echarts" lang="renderjs">
-import myEChartsReflect, { loadJsCallback } from '@/components/my-echarts/MyEcharts.js'
+import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
+import loadJsCallback from '@/components/my-echarts/loadJsCallback.js'
 export default {
   data() {
     this.isInited = false // 初始化标记

@@ -37,6 +37,7 @@ export default class TestOption extends MyEChartsOption {
       return prev + val
     }, 0)
     this.option = {
+      ...this.option, // 合并父类option
       animation: true,
       tooltip: TOOLTIP_CONF,
       grid: {

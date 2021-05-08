@@ -51,10 +51,14 @@ export class MyEChartsOption {
    * @param {ECharts} context echarts实列
    */
   constructor(context) {
+    if (new.target === MyEChartsOption) {
+      throw new Error(MyEChartsOption.name + '不能被直接实例化')
+    }
     if (!Object.getOwnPropertyDescriptor(this.constructor, 'name').writable) {
       throw new Error('请设置' + this.constructor.name + '类的静态属性name')
     }
     this.context = context
+    this.option = {}
   }
 
   showLoading() {

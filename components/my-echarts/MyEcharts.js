@@ -81,7 +81,7 @@ export class MyEChartsOption {
    * data发生改变回调函数
    * @param {any} data 页面组件接受的data
    */
-  onDatachange(data) {}
+  onDatachange(option, data, callJsMethod) {}
 
   onDestroy() {
     this.context.dispose()

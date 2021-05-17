@@ -3,12 +3,12 @@
 ### 亮点
 
 - <strong>无痛顺滑</strong>在 uni-app app 端编写 echarts 配置，几乎和在浏览器中书写方式一样。
+- 提供onCreate钩子函数，可以在此函数中添加依赖js，并等待资源完成之后，初始化echarts。
 - 支持 uniapp app 端 echarts 配置编写函数。
 - 支持 uniapp H5 移动端 echarts 交互。
-- 支持 echarts 事件，eg: <code>click,datazoom</code>，并将事件<code>$emit</code>到父组件，用户可自行处理。
+- 支持 echarts 事件，eg: <code>datazoom</code>，并将自动触发Option类中<code>onDatazoom(option, event, callJsMethod)</code>函数，在此函数中使用<code>callJsMethod</code>方法通知到父组件。
 - 支持 echarts 初始化完成<code>inited</code>事件通知。
-- 支持加载额外js资源，比如地图依赖的js。通过修改loadJsCallback.js文件<code>loadJsCallback(id)</code>函数.
-- 暴露echarts实列给Option类（比如<code>MyEChartsOption.prototype.showLoading()</code>），用户可以更灵活使用一些实列方法。
+- 支持加载额外js资源，比如地图依赖的js。
 
 ### 使用方式
 
@@ -75,10 +75,27 @@ export default class TestOption extends MyEChartsOption {
   static name = 'TestOption'
 
   /**
-   * @param {ECharts} context echarts实列，可以使用echarts一些方法，e.g: 比如加载loading
+   * 资源异步加载
+   * @params {string} id 元素的id，这里和上面name一样
+   * @return {Promise<void>}
    */
-  constructor(data = [], context) {
-    super(context)
+  async onCreate(id) {
+    await super.onCreate(id) 
+    // 加载别的资源，写在这里
+  }
+
+  /**
+   * @params {Object} context echarts.init返回值
+   */
+  onStart(context) {
+    super.onStart(context)
+  }
+
+  /**
+   * 数据data变化触发事件
+   * 在echarts初始化完成之后，默认会触发一次
+   */
+  onDatachange(option, data = [], callJsMethod) {
     if (data.length === 0) {
       this.showLoading()
     } else {
@@ -88,9 +105,7 @@ export default class TestOption extends MyEChartsOption {
       return prev + val
     }, 0)
     this.option = {
-      .
       // 自定义option
-      .
       yAxis: {
         axisLabel: {
           formatter: function (value, index) {
@@ -107,10 +122,25 @@ export default class TestOption extends MyEChartsOption {
           }
         }
       }],
-      .
       // 自定义option
-      .
     }
+    /** 需要手动返回，不要忘记他 */
+    return this.option
+  }
+
+  /**
+   * 触发datazoom事件
+   * @return {Object|undefined} 可以返回放入setOption中的对象。
+   */
+  onDatazoom(option, event, callJsMethod) {
+    /** 给父组件发送事件 */
+    callJsMethod('datazoom', {type: event.type})
+    return {}
+  }
+
+  /** touch 事件 */
+  onTouchstart(option, event, callJsMethod) {
+
   }
 }
 ```
@@ -120,33 +150,20 @@ export default class TestOption extends MyEChartsOption {
 | key | type | desc |
 | ---- | ---- | ---- |
 | data | <code>any</code> | 需要展示的数据 |
-| events | <code>string[]</code> | [echarts 支持的事件名称](https://echarts.apache.org/zh/api.html#events) |
+| events | <code>string[]</code> | [触发指定 echarts 支持的事件名称](https://echarts.apache.org/zh/api.html#events) |
 
 
 ### 约定
-  * <code>\<my-echarts\></code>的id为option类静态属性<code>name</code>，建议全局唯一，不然新会覆盖老的。
-  * 所有option类应类似<code>TestOption</code>那样，继承<code>MyEChartsOption</code>。
-  * 不要在option类中修改入参对象，这个会触发vue setter，<strong>导致无限触发change:prop函数</strong>，如果一定需要改变原入参对象请深拷贝原对象。e.g <code>JSON.parse(JSON.stringify(data))</code>或者使用<code>MyEcharts.clone</code>工具函数。
-    ```js
-    import { MyEChartsOption, clone } from '@/components/my-echarts/MyEcharts.js'
-
-    export default class TestOption extends MyEChartsOption {
-
-      static name = 'TestOption'
-
-      constructor(data = []) {
-        // 深拷贝
-        const newData = clone(data)
-      }
-    }
-
-    ```
-  * 如果需要对option类构造函数入参<code>data</code>做大量数据计算，请在逻辑层预先处理好。
+  * <code>\<my-echarts\></code>的id为<code>option</code>类静态属性<code>name</code>，建议全局唯一，不然新会覆盖老的。
+  * 所有<code>option</code>类应类似<code>TestOption</code>那样，继承<code>MyEChartsOption</code>。
+  * 不要在<code>onDatachange</code>类中修改入参<code>data</code>对象，这个会触发vue setter，<strong>导致无限触发change:prop函数</strong>，如果一定需要改变原入参对象请深拷贝原对象。e.g <code>JSON.parse(JSON.stringify(data))</code>或者使用<code>MyEcharts.clone</code>工具函数。
+  * 如果需要对<code>option</code>类<code>onDatachange</code>方法入参<code>data</code>做大量数据计算，请在逻辑层预先处理好。
+  * <code>option</code>类中事件方法定义，比如<code>onDatazoom</code>，则是<code>datazoom</code>事件首字母大写并添加<code>on</code>前缀方式得来。
 
 ### 思想
     作者从java中的反射机制得到灵感，在代码运行的时候，动态实例化新对象。  
     所以在renderjs层先注册了echarts option的类（<code>T extends MyEChartsOption</code>）。  
-    在渲染echarts时候，只用逻辑层data实际上重新实列化了option，这一步的意义是保留option中函数设置。  
+    在渲染echarts时候，只用逻辑层data实际上重新实列化了<code>option</code>，这一步的意义是保留<code>option</code>中函数设置。  
     这样就和在浏览器中编写方式一样。
 
 

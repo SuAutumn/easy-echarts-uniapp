@@ -16,7 +16,7 @@ export default class MapOption extends MyEChartsOption {
     this.showLoading()
   }
 
-  onDataChange(lines) {
+  onDatachange(option, lines) {
     this.hideLoading()
     this.option = {
       ...this.option,
@@ -161,6 +161,6 @@ export default class MapOption extends MyEChartsOption {
         },
       ],
     }
-    console.log(this.option)
+    return this.option
   }
 }

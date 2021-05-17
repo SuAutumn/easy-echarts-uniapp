@@ -1,3 +1,6 @@
+import { loadBmapApi, loadJs } from './loadJsCallback'
+import mixin from './mixin'
+
 /** 反射容器 */
 class MyEChartsReflect {
   constructor() {
@@ -9,11 +12,6 @@ class MyEChartsReflect {
    */
   registOptConstructor(optCons) {
     if (typeof optCons === 'function' && optCons.prototype instanceof MyEChartsOption) {
-      if (process.env.NODE_ENV === 'development') {
-        if (this.constructorList[optCons.name]) {
-          console.warn(optCons.name + '已经注册过，确定覆盖原来，请忽略。')
-        }
-      }
       this.constructorList[optCons.name] = optCons
     } else {
       throw new TypeError(String(optCons) + '应为MyEChartsOption子类')
@@ -28,7 +26,7 @@ class MyEChartsReflect {
   reflect(consName) {
     const Cons = this.constructorList[consName]
     if (!Cons) {
-      throw new ReferenceError('未找到' + consName + '类')
+      throw new ReferenceError('未找到' + consName + '类，您可能没有设置' + consName + '类的静态属性name')
     }
     return Cons
   }
@@ -50,16 +48,50 @@ export class MyEChartsOption {
   /**
    * @param {ECharts} context echarts实列
    */
-  constructor(context) {
+  constructor() {
     if (new.target === MyEChartsOption) {
       throw new Error(MyEChartsOption.name + '不能被直接实例化')
     }
     if (!Object.getOwnPropertyDescriptor(this.constructor, 'name').writable) {
       throw new Error('请设置' + this.constructor.name + '类的静态属性name')
     }
-    this.context = context
+    this.context = null
     this.option = {}
   }
+
+  /**
+   * 请求echarts 资源依赖
+   * @param {string} id 页面组件id属性
+   */
+  async onCreate(id) {
+    if (!(window.echarts && window.echarts.version)) {
+      await this.loadJs('./static/echarts/echarts.min.js')
+    }
+  }
+
+  /**
+   * 执行echart初始化
+   * @param {Object} context echarts.init返回值
+   */
+  onStart(context) {
+    this.context = context
+  }
+
+  /**
+   * data发生改变回调函数
+   * @param {any} data 页面组件接受的data
+   */
+  onDatachange(data) {}
+
+  onDestroy() {
+    this.context.dispose()
+  }
+
+  /** events */
+
+  onTouchstart(option, event, callJsMethod) {}
+  onTouchmove(option, event, callJsMethod) {}
+  onTouchend(option, event, callJsMethod) {}
 
   showLoading() {
     this.context.showLoading('default', {
@@ -75,6 +107,14 @@ export class MyEChartsOption {
     this.context.hideLoading()
   }
 }
+
+/**
+ * 添加loadjs方法
+ */
+mixin(MyEChartsOption.prototype, {
+  loadJs: loadJs,
+  loadBmapApi: loadBmapApi,
+})
 
 function isPrimaryType(input) {
   return ['undefined', 'string', 'number', 'boolean', 'symbol'].indexOf(typeof input) > -1

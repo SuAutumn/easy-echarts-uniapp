@@ -25,9 +25,17 @@ export default class TestOption extends MyEChartsOption {
    * 导致无法在renderjs层重新实例化逻辑层的option构造类。
    */
   static name = 'TestOption'
-  
-  constructor(data = [], context) {
-    super(context)
+
+  async onCreate(id) {
+    await super.onCreate(id)
+  }
+
+  onStart(context) {
+    super.onStart(context)
+  }
+
+  onDatachange(option, data, callJsMethod) {
+    console.log('on data change', option)
     if (data.length === 0) {
       this.showLoading()
     } else {
@@ -135,5 +143,16 @@ export default class TestOption extends MyEChartsOption {
         },
       ],
     }
+    return this.option
+  }
+
+  onClick(option, event, callJsMethod) {
+    console.log('webview on click')
+    callJsMethod('click', 'js on click')
+  }
+
+  onDatazoom(option, event, callJsMethod) {
+    console.log('webview on data zoom')
+    callJsMethod('click', 'js on data zoom')
   }
 }

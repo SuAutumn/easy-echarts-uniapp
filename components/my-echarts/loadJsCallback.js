@@ -4,7 +4,7 @@
  * @param {string} ak 百度地图ak 请使用自己申请ak
  * @returns {Promise<void>}
  */
-function loadBmapApi(ak) {
+export function loadBmapApi(ak) {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script')
     script.src = 'https://api.map.baidu.com/api?v=2.0&ak=' + ak + '&callback=bmapload'
@@ -22,7 +22,7 @@ function loadBmapApi(ak) {
  * @param {string} src js文件地址
  * @returns
  */
-function loadJs(src) {
+export function loadJs(src) {
   return new Promise((resolve, reject) => {
     const script = document.createElement('script')
     script.src = src

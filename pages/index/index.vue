@@ -5,7 +5,7 @@
       <my-echarts
         id="TestOption"
         :data="data"
-        :events="['click', 'datazoom', 'rendered', 'finished']"
+        :events="['click', 'datazoom']"
         @inited="onInited"
         @click="onClick"
         @datazoom="onDatazoom"

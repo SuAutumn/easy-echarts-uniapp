@@ -1,5 +1,13 @@
 <template>
-  <view class="my-echarts" :prop="data" :data-events="events" :change:prop="echarts.onPropChange"></view>
+  <view
+    class="my-echarts"
+    :prop="data"
+    :data-events="events"
+    :change:prop="echarts.onPropChange"
+    @touchstart="echarts.onTouchstart"
+    @touchend="echarts.onTouchend"
+    @touchmove="echarts.onTouchmove"
+  ></view>
 </template>
 
 <script>
@@ -27,6 +35,8 @@ export default {
   data() {
     this.isInited = false // 初始化标记
     this.consOpt = () => {} // echarts option constructor
+    this.consIns = null // consOpt 实列化
+    this.myCharts = null
     return {}
   },
   mounted() {
@@ -34,27 +44,29 @@ export default {
     /** [参照](https://ask.dcloud.net.cn/question/88473) */
     window.wx = undefined
     // #endif
-    loadJsCallback(this.$el.id).then(this.init)
+    if (!this.$el.id) throw new TypeError('请设置元素的id')
+    this.consOpt = myEChartsReflect.reflect(this.$el.id)
+    this.consIns = new this.consOpt()
+    this.consIns.onCreate(this.$el.id).then(this.init)
   },
   methods: {
     onPropChange(option, oldOption) {
       this.update(option, oldOption)
     },
     init() {
-      if (!this.$el.id) throw new TypeError('请设置元素的id')
-      this.consOpt = myEChartsReflect.reflect(this.$el.id)
-      if (!this.isInited && this.consOpt) {
-        /** 不再使用id获取元素，在列表中展示，id会重复。 */
-        this.myCharts = echarts.init(this.$el)
-        this.isInited = true
-        this.setEventTransfer()
-        this.update(this.data)
-      }
+      /** 不再使用id获取元素，在列表中展示，id会重复。 */
+      this.myCharts = echarts.init(this.$el)
+      this.isInited = true
+      this.consIns.onStart(this.myCharts)
+      this.setEventTransfer()
+      this.update(this.data)
     },
     update(data, oldData) {
       /** 防止option更新时候 还没有初始化好 */
       if (this.isInited) {
-        this.myCharts.setOption(new this.consOpt(data, this.myCharts).option, true)
+        this.myDispatch('datachange', data)
+        // const option = this.consIns.onDataChange(this.myCharts.getOption(), data, this.callJsMethod)
+        // option && this.myCharts.setOption(option, true)
       } 
     },
     /**
@@ -71,23 +83,54 @@ export default {
             if (Object.prototype.toString.call(params) === '[object Object]') {
               delete params.event
             }
-            this.$ownerInstance.callMethod('eventTransfer', {name, value: params})
+            this.myDispatch(name, params)
           })
         })
       }
       /** 初始化事件 */
-      this.$ownerInstance.callMethod('eventTransfer', {name: 'inited', value: this.isInited})
+      this.callJsMethod('inited', this.isInited)
+    },
+    callJsMethod(name, value) {
+      this.$ownerInstance.callMethod('eventTransfer', {name, value})
+    },
+    /**
+     * call the class event method function(e.g. onClick, onDatazoom)
+     */
+    myDispatch(name, params) {
+      const event = 'on' + name[0].toUpperCase() + name.slice(1)
+      const option = this.myCharts.getOption()
+      if ( typeof this.consIns[event] === 'function' ){
+        const r = this.consIns[event](option, params, this.callJsMethod)
+        r && this.myCharts.setOption(r)
+      } else {
+        console.warn(`请先定义${this.consOpt.name}#${name}方法。`)
+      }
     },
 	  getEvents() {
 		  const e = this.$ownerInstance.getDataset().events
 		  if (e) {
 			  return e.split(',')
 		  }
-	  }
+	  },
+    onTouchstart(e) {
+      this.onTouch('touchstart', e)
+    },
+    onTouchend(e) {
+      this.onTouch('touchend', e)
+    },
+    onTouchmove(e) {
+      this.onTouch('touchmove', e)
+    },
+    onTouch(name, e) {
+      if (this.isInited) {
+        /** event 存在循环引用 暂时先去除该属性 */
+        this.myDispatch(name, e)
+      }
+    },
   },
   beforeDestroy() {
-    if (this.myCharts) {
-      this.myCharts.dispose()
+    if (this.consIns) {
+      this.consIns.onDestroy()
     }
   }
 }

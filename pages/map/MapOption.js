@@ -1,10 +1,25 @@
 import { MyEChartsOption, loadBmap, loadJs, delay } from '@/components/my-echarts/MyEcharts.js'
+const B_MAP_AK = 'CKXbsfREBTNY3fiYPoK5hs0GmFvCG2z8 '
 
 export default class MapOption extends MyEChartsOption {
   static name = 'MapOption'
-  constructor(lines) {
-    super()
+
+  async onCreate(id) {
+    await super.onCreate(id)
+    if (!window.BMap) {
+      await Promise.all([this.loadBmapApi(B_MAP_AK), this.loadJs('./static/echarts/bmap.js')])
+    }
+  }
+
+  onStart(context) {
+    super.onStart(context)
+    this.showLoading()
+  }
+
+  onDataChange(lines) {
+    this.hideLoading()
     this.option = {
+      ...this.option,
       grid: {
         top: '10%',
         bottom: '30%',
@@ -146,5 +161,6 @@ export default class MapOption extends MyEChartsOption {
         },
       ],
     }
+    console.log(this.option)
   }
 }

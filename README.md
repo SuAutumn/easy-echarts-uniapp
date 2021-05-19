@@ -9,6 +9,7 @@
 - 支持 echarts 事件，eg: <code>datazoom</code>，并将自动触发Option类中<code>onDatazoom(option, event, callJsMethod)</code>函数，在此函数中使用<code>callJsMethod</code>方法通知到父组件。
 - 支持 echarts 初始化完成<code>inited</code>事件通知。
 - 支持加载额外js资源，比如地图依赖的js。
+- 支持原生touchstart, touchmove, touchend事件。
 
 ### 使用方式
 
@@ -63,7 +64,7 @@ TestOption: 自定义option类，本示例中定义<strong>y轴formatter函数�
     导致无法在renderjs层重新实例化逻辑层的option构造类。
   * 说明2：id需要和name保持一致。
 
-```javascript
+```js
 
 export default class TestOption extends MyEChartsOption {
   /** 
@@ -138,7 +139,12 @@ export default class TestOption extends MyEChartsOption {
     return {}
   }
 
-  /** touch 事件 */
+  /** 
+   * touch 事件
+   * @params {Object} option echarts.getOption()返回值
+   * @params {Object} event echarts事件对象或者html事件对象
+   * @params {function} callJsMethod 通知父组件事件
+   */
   onTouchstart(option, event, callJsMethod) {
 
   }
@@ -161,12 +167,13 @@ export default class TestOption extends MyEChartsOption {
   * <code>option</code>类中事件方法定义，比如<code>onDatazoom</code>，则是<code>datazoom</code>事件首字母大写并添加<code>on</code>前缀方式得来。
 
 ### 思想
-    作者从java中的反射机制得到灵感，在代码运行的时候，动态实例化新对象。  
-    所以在renderjs层先注册了echarts option的类（<code>T extends MyEChartsOption</code>）。  
-    在渲染echarts时候，只用逻辑层data实际上重新实列化了<code>option</code>，这一步的意义是保留<code>option</code>中函数设置。  
-    这样就和在浏览器中编写方式一样。
+
+  作者从java中的反射机制得到灵感，在代码运行的时候，动态实例化新对象。  
+  所以在renderjs层先注册了echarts option的类（<code>T extends MyEChartsOption</code>）。  
+  在渲染echarts时候，只用逻辑层data实际上重新实列化了<code>option</code>，这一步的意义是保留<code>option</code>中函数设置。  
+  这样就和在浏览器中编写方式一样。
 
 
-#### 如果本项目帮助到您的话，请您不要吝啬，赠人玫瑰，手留余香。随手点个[star](https://gitee.com/gitee_zhangp/easy-echarts-uniapp)，或者满分好评。
+### 如果本项目帮助到您的话，请您不要吝啬，赠人玫瑰，手留余香。随手点个[star](https://gitee.com/gitee_zhangp/easy-echarts-uniapp)，或者满分好评。
 
-#### 如遇问题，欢迎提[issue](https://gitee.com/gitee_zhangp/easy-echarts-uniapp/issues)，或者底部留言。
+### 如遇问题，欢迎提[issue](https://gitee.com/gitee_zhangp/easy-echarts-uniapp/issues)，或者底部留言。

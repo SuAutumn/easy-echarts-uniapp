@@ -30,13 +30,13 @@ export default {
 
 <script module="echarts" lang="renderjs">
 import myEChartsReflect from '@/components/my-echarts/MyEcharts.js'
-import loadJsCallback from '@/components/my-echarts/loadJsCallback.js'
 export default {
   data() {
     this.isInited = false // 初始化标记
     this.consOpt = () => {} // echarts option constructor
     this.consIns = null // consOpt 实列化
     this.myCharts = null
+    this._newData = null // 缓存在初始化之前变化的data
     return {}
   },
   mounted() {
@@ -59,15 +59,16 @@ export default {
       this.isInited = true
       this.consIns.onStart(this.myCharts)
       this.setEventTransfer()
-      this.update(this.data)
+      this.update(this._newData || this.data)
     },
     update(data, oldData) {
       /** 防止option更新时候 还没有初始化好 */
       if (this.isInited) {
         this.myDispatch('datachange', data)
-        // const option = this.consIns.onDataChange(this.myCharts.getOption(), data, this.callJsMethod)
-        // option && this.myCharts.setOption(option, true)
-      } 
+      } else {
+        // fix: 修复在手机端数据change之后this.data值为undefined，导致init时候this.data错误
+        this._newData = data
+      }
     },
     /**
      * 转发事件，可以自行添加echarts支持的事件
